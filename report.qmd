@@ -1,5 +1,5 @@
 ---
-title: "Automated Data Report"
+title: "Automated Data Report updated"
 format: html
 execute:
   echo: false

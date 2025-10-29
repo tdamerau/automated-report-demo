@@ -31,6 +31,12 @@ jobs:
       - name: Run report in container
         run: |
           docker run --rm -v $(pwd):/output report-runner
+      
+      - name: Prepare deployment with password protection
+        run: |
+          # Copy password wrapper as index.html (landing page)
+          cp password-wrapper.html index.html
+          # Report.html already exists from Docker run
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

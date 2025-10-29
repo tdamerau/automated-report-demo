@@ -34,9 +34,21 @@ jobs:
       
       - name: Prepare deployment with password protection
         run: |
+          # Generate random filename with timestamp and random hash
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          RANDOM_HASH=$(echo $RANDOM | md5sum | head -c 8)
+          REPORT_NAME="r-${TIMESTAMP}-${RANDOM_HASH}.html"
+          
+          # Rename report to random filename
+          mv report.html $REPORT_NAME
+          
+          # Update password wrapper to reference the new filename
+          sed -i "s|report.html|$REPORT_NAME|g" password-wrapper.html
+          
           # Copy password wrapper as index.html (landing page)
           cp password-wrapper.html index.html
-          # Report.html already exists from Docker run
+          
+          echo "Report published as: $REPORT_NAME"
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3

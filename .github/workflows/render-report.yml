@@ -57,3 +57,54 @@ jobs:
           publish_dir: .
           publish_branch: gh-pages
           force_orphan: true  # Start fresh each time, removes old files
+      - name: Notify Slack
+        if: success()
+        run: |
+          # Get the obfuscated report filename
+          REPORT_FILE=$(ls r-*.html | head -1)
+          REPORT_URL="https://tdamerau.github.io/automated-report-demo/"
+          
+          # Send Slack notification
+          curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "📊 New Report Available",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Report:* Automated Data Report"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Generated:* '"$(date -u '+%Y-%m-%d %H:%M UTC')"'"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🔗 *<'"$REPORT_URL"'|View Report>*\n🔑 Password: `DataInsights2024`"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "Report runs every Monday at 9 AM UTC"
+                    }
+                  ]
+                }
+              ]
+            }'

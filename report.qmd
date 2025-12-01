@@ -1,0 +1,30 @@
+---
+title: "Automated Data Report updated"
+format: html
+execute:
+  echo: false
+---
+
+## Summary Report
+
+Generated on: `r Sys.Date()`
+```{r}
+library(ggplot2)
+
+# Simple demo data
+data <- data.frame(
+  month = month.abb[1:6],
+  sales = c(150, 180, 165, 200, 190, 220)
+)
+
+# Create plot
+ggplot(data, aes(x = month, y = sales)) +
+  geom_col(fill = "steelblue") +
+  theme_minimal() +
+  labs(title = "Monthly Sales", y = "Sales ($)")
+```
+
+## Key Metrics
+
+- Total Sales: `r sum(data$sales)`
+- Average: `r round(mean(data$sales), 1)`
